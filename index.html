@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn Data Science & Cybersecurity</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      background: url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Header Styles */
+    header {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin: 10px 0 0;
+    }
+
+    /* Main Content Styles */
+    main {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      margin: 20px;
+      border-radius: 10px;
+    }
+
+    .topics-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .topics-container section {
+      flex: 1;
+    }
+
+    section h2 {
+      font-size: 2rem;
+      border-bottom: 2px solid #00ff00;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    section ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    section ul li {
+      background: rgba(0, 0, 0, 0.5);
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 4px solid #00ff00;
+    }
+
+    /* Form Styles */
+    .form-container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 40px;
+    }
+
+    .form-container h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .form-container label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .form-container input,
+    .form-container select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #00ff00;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+    }
+
+    .form-container button {
+      background: #00ff00;
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .form-container button:hover {
+      background: #00cc00;
+    }
+
+    /* Footer Styles */
+    footer {
+      background: rgba(0, 0, 0, 0.7);
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>Learn Data Science & Cybersecurity</h1>
+      <p>Your roadmap to mastering the skills of the future.</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="topics-container">
+      <section id="data-science">
+        <h2>Data Science Topics</h2>
+        <ul>
+          <li>Mathematics for Data Science</li>
+          <li>Programming Basics (Python, R, SQL)</li>
+          <li>Data Wrangling and Cleaning</li>
+          <li>Machine Learning</li>
+          <li>Deep Learning</li>
+          <li>Big Data Tools</li>
+        </ul>
+      </section>
+
+      <section id="cybersecurity">
+        <h2>Cybersecurity Topics</h2>
+        <ul>
+          <li>Networking Basics</li>
+          <li>Cyber Threats and Vulnerabilities</li>
+          <li>Penetration Testing</li>
+          <li>Cloud Security</li>
+          <li>Incident Response</li>
+          <li>Advanced Cybersecurity</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="form-container">
+      <h2>Register for a Course</h2>
+      <form id="registration-form">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="id-number">ID Number:</label>
+        <input type="text" id="id-number" name="id-number" required>
+
+        <label for="course">Choose Course:</label>
+        <select id="course" name="course" required>
+          <option value="">Select a course</option>
+          <option value="Data Science">Data Science</option>
+          <option value="Cybersecurity">Cybersecurity</option>
+        </select>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2023 Learn Data Science & Cybersecurity. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.getElementById('registration-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = {
+        name: document.getElementById('name').value,
+        idNumber: document.getElementById('id-number').value,
+        course: document.getElementById('course').value,
+        gender: document.getElementById('gender').value,
+        email: document.getElementById('email').value,
+      };
+
+      fetch('/register/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert('Registration successful!');
+          console.log(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+  </script>
+</body>
+</html>
