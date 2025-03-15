@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DONOR HUB - Blood Donation Management System</title>
+    <link rel="stylesheet" href="{% static 'index.css'%}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            {% if auth %}
+            <div class="logo">WELCOME Back {{user.username}} to DONORHUB</div>
+            {%else%}
+            <div class="logo">DONOR HUB</div>
+            {% endif%}
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="donate" class="donate-btn">Donate</a></li>
+                
+                <li><a href="overview" class="overview-btn">Overview</a></li>
+                <li><a href="vision" class="vision-btn"> Vision</a></li>
+                <li><a href="contact" class="contact-btn" >Contact</a></li>
+                <li><a href="profile" class="profile-btn">profile</li>
+                <li><a href="signup" class="signUp-btn">Sign Up</a></li>
+               
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Every Drop Counts</h1>
+            <p>Your blood donation can save up to three lives. Join our mission to help those in need.</p>
+            <div class="hero-buttons">
+                <a href="donate" class="btn btn-primary">Donate Now</a>
+                <a href="find" class="btn btn-secondary">Find Blood</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <h3>10,000+</h3>
+            <p>Blood Donations</p>
+        </div>
+        <div class="stat-card">
+            <h3>5,000+</h3>
+            <p>Regular Donors</p>
+        </div>
+        <div class="stat-card">
+            <h3>30,000+</h3>
+            <p>Lives Saved</p>
+        </div>
+        <div class="stat-card">
+            <h3>100+</h3>
+            <p>Partner Hospitals</p>
+        </div>
+    </section>
+
+    <section class="blood-types">
+        <h2>Available Blood Types</h2>
+        <div class="blood-grid">
+            <div class="blood-type">
+                <span class="type">A+</span>
+                <span class="status available">Available</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">A-</span>
+                <span class="status urgent">Urgent</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">B+</span>
+                <span class="status available">Available</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">B-</span>
+                <span class="status low">Low</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">AB+</span>
+                <span class="status available">Available</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">AB-</span>
+                <span class="status low">Low</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">O+</span>
+                <span class="status urgent">Urgent</span>
+            </div>
+            <div class="blood-type">
+                <span class="type">O-</span>
+                <span class="status low">Low</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Why Choose DONORHUB?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🏥</div>
+                <h3>24/7 Support</h3>
+                <p>Round-the-clock assistance for all your blood donation needs</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚑</div>
+                <h3>Emergency Service</h3>
+                <p>Quick response during emergencies with immediate blood supply</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Easy Search</h3>
+                <p>Find blood donors and blood banks in your area easily</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Real-time Updates</h3>
+                <p>Get instant notifications about blood requirements</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-content">
+            <h2>Ready to Save Lives?</h2>
+            <p>Join our community of blood donors and help save lives today.</p>
+            <a href="#" class="btn btn-primary">Register as Donor</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>DONORHUB</h3>
+                <p>Making blood donation easier and more accessible for everyone.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Find Blood</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@DONORHUB.com</p>
+                <p>Phone: 0797375501</p>
+                <p>0111467849</p>
+            </div>
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 DONORHUB. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

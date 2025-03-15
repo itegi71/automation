@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book an Appointment</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://www.google.com/imgres?q=blood%20donation&imgurl=https%3A%2F%2Fwww.capecodhealth.org%2Fapp%2Ffiles%2Fpublic%2F9919%2FCOVIDBloodDonate_cchn.jpg&imgrefurl=https%3A%2F%2Fwww.capecodhealth.org%2Fmedical-services%2Femergency-services%2Fyour-blood-donation-is-needed-more-than-ever%2F&docid=6WA96IK6-3msSM&tbnid=oXJ5YZlccIwwwM&vet=12ahUKEwjc2ajR_e6LAxWF_7sIHcl0AQIQM3oECBYQAA..i&w=962&h=521&hcb=2&ved=2ahUKEwjc2ajR_e6LAxWF_7sIHcl0AQIQM3oECBYQAA'); /* Blood donation-themed background */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #c82333; /* Blood red color */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #c82333; /* Blood red color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #a71d2a; /* Darker red on hover */
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #c82333; /* Blood red color for errors */
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .back-button {
+            background-color: #6c757d; /* Gray color for the back button */
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268; /* Darker gray on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="window.history.back()">Back</button>
+        <h2>Book an Appointment</h2>
+        <form id="appointmentForm" method ='post',action='appointment'>
+            {% csrf_token %} 
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <div id="fullNameError" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="idNumber">ID Number:</label>
+                <input type="text" id="idNumber" placeholder="Enter your ID number" name="idNumber" required>
+                <div id="idNumberError" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="contactNumber">Contact Number:</label>
+                <input type="tel" id="contactNumber" placeholder="Enter a contact number we can reach you" name="contactNumber" required>
+                <div id="contactNumberError" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="appointmentDate">Appointment Date:</label>
+                <input type="date" id="appointmentDate" placeholder="Schedule a day" name="appointmentDate" required>
+                <div id="appointmentDateError" class="error"></div>
+            </div>
+            <button type="submit">Book</button>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            // Clear previous error messages
+            document.getElementById('fullNameError').textContent = '';
+            document.getElementById('idNumberError').textContent = '';
+            document.getElementById('contactNumberError').textContent = '';
+            document.getElementById('appointmentDateError').textContent = '';
+
+            // Get form values
+            const fullName = document.getElementById('fullName').value.trim();
+            const idNumber = document.getElementById('idNumber').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const appointmentDate = document.getElementById('appointmentDate').value;
+
+            let isValid = true;
+
+            // Validate Full Name
+            if (fullName === '') {
+                document.getElementById('fullNameError').textContent = 'Full Name is required.';
+                isValid = false;
+            } else if (!/^[A-Za-z\s]+$/.test(fullName)) {
+                document.getElementById('fullNameError').textContent = 'Full Name should contain only letters and spaces.';
+                isValid = false;
+            }
+
+            // Validate ID Number
+            if (idNumber === '') {
+                document.getElementById('idNumberError').textContent = 'ID Number is required.';
+                isValid = false;
+            } else if (!/^\d+$/.test(idNumber)) {
+                document.getElementById('idNumberError').textContent = 'ID Number must contain only numbers.';
+                isValid = false;
+            }
+
+            // Validate Contact Number
+            if (contactNumber === '') {
+                document.getElementById('contactNumberError').textContent = 'Contact Number is required.';
+                isValid = false;
+            } else if (!/^\d{10}$/.test(contactNumber)) {
+                document.getElementById('contactNumberError').textContent = 'Contact Number must be 10 digits.';
+                isValid = false;
+            }
+
+            // Validate Appointment Date
+            if (appointmentDate === '') {
+                document.getElementById('appointmentDateError').textContent = 'Appointment Date is required.';
+                isValid = false;
+            } else {
+                const selectedDate = new Date(appointmentDate);
+                const currentDate = new Date();
+                if (selectedDate < currentDate) {
+                    document.getElementById('appointmentDateError').textContent = 'Appointment Date cannot be in the past.';
+                    isValid = false;
+                }
+            }
+
+            // Return false to prevent form submission if validation fails
+            return isValid;
+        }
+    </script>
+</body>
+</html>
