@@ -2,15 +2,21 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from .models import *
+ 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from.forms import DonoForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login
+from django.conf import settings 
+from django.core.mail import send_mail
+from django.core.exceptions import ObjectDoesNotExist
 
 client_id:str
 authentication =False
-from django.core.mail import send_mail
-from django.conf import settings
+
+
 
 
 def user_login(request):
@@ -18,10 +24,13 @@ def user_login(request):
     if request.method == 'POST':
         email = request.POST.get('email','')
         password = request.POST.get('password','')
-      
+       
+       
+            
         if Auth(email,password):
             request.session['client_id'] = email
             request.session['authentication'] = True
+
             return redirect('index')
         
         else:
@@ -52,26 +61,75 @@ def donate (request):
     template=loader.get_template('donate.html')
     return HttpResponse(template.render())
 
-@login_required
 
-def profile(request):
-    user=request.user
+def donor_profile(request):
+    if 'client_id' not in request.session:
+        return redirect('login')
+    
+    email=request.session['client_id']
+
     try:
-        donor=Donors.objects.get(email=user.email)
+        donor=Donors.objects.get(email=email)
         national_id=donor.national_id
-    except Donors.DoesNotExist:
-        national_id="N/A"
 
+        user_info=USER.objects.get(id_number=national_id)
+    except Donors.DoesNotExist:
+        return render(request,'error.html',{'error':'User information not found'})
+    
     context={
-        'username':user.username,
-        'email':user.email,
-        'national_id':national_id,
+        'national_id':donor.national_id,
+        'username1':donor.username,
+        'email':donor.email,
+
+        'name':user_info.name,
+        'gender':user_info.gender,
+        'location':user_info.location,
+        'phone':user_info.phone,
     }
     return render(request,'profile.html',context)
-def appointment(request):
-    template=loader.get_template('appointment.html')
-    return HttpResponse(template.render())
 
+    
+def appointment(request):
+    if request.method=='POST':
+        if 'client_id' not in request.session:
+            return redirect('login')
+        
+        user_email=request.session['client_id']
+        appointment_date=request.POST.get('appointmentDate','')
+
+        try:
+            donor=Donors.objects.get(email=user_email)
+        except Donors.DoesNotExist:
+            return render(request,'appointment.html',{'error':'Donor not found. Please sign up first.'})
+        
+        subject='Appointment confirmation'
+        message=f'''
+        Hello{donor.username},
+        Your appointment to donate blood has been scheduled successsfully.
+        Appointment Date: {appointment_date}
+        Reporting Time:8:00 AM
+
+        Please arrrive at the registration center on time .
+
+        best regards ,
+        Donor Hub Team 
+        '''
+
+        from_email=settings.DEFAULT_FROM_EMAIL
+        recipient_list=[user_email]
+
+        try:
+            send_mail(subject,message,from_email,recipient_list)
+            print("appointment confirmation email sent successfully")
+            return redirect ('succ4')
+        except Exception as e:
+            print(f"Failed to send email:{e}")
+            return render(request,'appointment.html',{'error':'Failed to send confirmation email.please try again'})
+        
+        
+    else:
+        return render(request, 'appointment.html')
+        
 def overview(request):
     template=loader.get_template('overview.html')
     return HttpResponse(template.render())
@@ -96,21 +154,51 @@ def vision(request):
 
 
 def register(request):
-    if request.method =='POST':
-        name=request.POST.get('name','')
-        age=request.POST.get('age','')
-        id_number=request.POST.get('id_number','')
-        gender=request.POST.get('gender','')
-        location=request.POST.get('location','')
-        phone=request.POST.get('phone','')
-        center=request.POST.get('center','')
-    
-        new=USER(name=name,age=age, id_number=id_number, location=location,phone=phone,center=center)
-        new.save()
-        return redirect(request,'appointment')
-       
+    if request.method == 'POST':
+        name = request.POST.get('name', '')
+        age = request.POST.get('age', '')
         
-    return render(request, 'donate.html',{})
+        gender = request.POST.get('gender', '')
+        location = request.POST.get('location', '')
+        phone = request.POST.get('phone', '')
+        center = request.POST.get('center', '')
+
+        if 'client_id' in request.session:
+            email=request.session['client_id']
+        else:
+            return render(request,'donate.html',{'error':'You must be logged in to register as a donor.'})
+        
+        try:
+            donor=Donors.objects.get(email=email)
+            national_id=donor.national_id
+        except Donors.DoesNotExist:
+            return render(request,'donate.html',{'error':"Donor not found. Please sign up first."})
+        
+        if USER.objects.filter(id_number=national_id).exists():
+            return render(request,'donate.html',{'error':'You are already registered as a Donor.'})
+        
+        new_donor=USER(
+    
+            name=name,
+            age=age,
+            id_number=national_id,
+            gender=gender,
+            location=location,
+            phone=phone,
+            center=center
+        )
+        new_donor.save()
+        
+
+        return render(request,'succ3.html',{'name':name,'center':center,})
+    
+    return render(request,'donate.html',{})
+
+
+def succ_reg (request):
+    template=loader.get_template('succ3.html')
+    return HttpResponse(template.render())    
+
 
 def req_blood(request):
     if request.method=='POST':
@@ -130,10 +218,16 @@ def req_blood(request):
         req=REQUESTS(name=name, idNumber=idNumber,email=email,phone=phone,gender=gender,bloodType=bloodType,location=location,address=address)
         req.save()
 
-        messages.success(request,'Your request has been submitted succsefully!')
-        return redirect ('index')
+        
+        return redirect ('succ')
 
     return render(request, 'find.html')
+
+def success_reg(request):
+    template=loader.get_template('succ.html')
+    return HttpResponse(template.render())
+
+
 
 def sign(request):
     if request.method=='POST':
@@ -152,6 +246,7 @@ def sign(request):
             username=username,
             email=email,
             password=password
+            
         )
         sig.save()
 
@@ -174,12 +269,16 @@ def sign(request):
         except Exception as e:
             print(f"failed to send the email:{e}")
 
-        return redirect('login')
+        return redirect('succ2')
     return render(request,'signup.html')
 
-def user_logout(request):
+def succ_sign(request):
+    template=loader.get_template('succ2.html')
+    return HttpResponse(template.render())
+
+def logout(request):
     request.session.flush()
-    return redirect('test')
+    return redirect('signup')
 
 def submit_donation(request):
     if request.method =='POST':
@@ -201,6 +300,36 @@ def submit_donation(request):
         send_mail(subject, message,from_email,recipient_list)
 
         return render(request,'donor.html')
+    
+  
+    
+    
+def succ4(request):
+    template=loader.get_template('succ4.html')
+    return HttpResponse(template.render())
+
+"""openai.api_key=''
+
+@csrf_exempt
+def chatbot(request):
+    if request.method=='POST':
+        user_message=request.POST.get('message','')
+
+        response=openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role":"system","content":"You are a helpful assistant that provides information about blood donation"},
+                {"role":"user","content":user_message},
+
+            ]
+
+        )
+
+        bot_response=response['choices'][0]['message']['content']
+        return JsonResponse({'response':bot_response})
+    return JsonResponse({'error':'Invalid request method'}, status=400)
+    
+"""
 
 
 

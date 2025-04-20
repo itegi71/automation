@@ -88,91 +88,18 @@
     <div class="container">
         <button class="back-button" onclick="window.history.back()">Back</button>
         <h2>Book an Appointment</h2>
-        <form id="appointmentForm" method ='post',action='appointment'>
+        <form id="appointmentForm" method ='post'action="{% url 'appointment'%}">
             {% csrf_token %} 
-            <div class="form-group">
-                <label for="fullName">Full Name:</label>
-                <input type="text" id="fullName" name="fullName" required>
-                <div id="fullNameError" class="error"></div>
-            </div>
-            <div class="form-group">
-                <label for="idNumber">ID Number:</label>
-                <input type="text" id="idNumber" placeholder="Enter your ID number" name="idNumber" required>
-                <div id="idNumberError" class="error"></div>
-            </div>
-            <div class="form-group">
-                <label for="contactNumber">Contact Number:</label>
-                <input type="tel" id="contactNumber" placeholder="Enter a contact number we can reach you" name="contactNumber" required>
-                <div id="contactNumberError" class="error"></div>
-            </div>
+          
             <div class="form-group">
                 <label for="appointmentDate">Appointment Date:</label>
-                <input type="date" id="appointmentDate" placeholder="Schedule a day" name="appointmentDate" required>
+                <input type="date" id="appointmentDate" name="appointmentDate" required>
                 <div id="appointmentDateError" class="error"></div>
             </div>
             <button type="submit">Book</button>
         </form>
     </div>
 
-    <script>
-        function validateForm() {
-            // Clear previous error messages
-            document.getElementById('fullNameError').textContent = '';
-            document.getElementById('idNumberError').textContent = '';
-            document.getElementById('contactNumberError').textContent = '';
-            document.getElementById('appointmentDateError').textContent = '';
-
-            // Get form values
-            const fullName = document.getElementById('fullName').value.trim();
-            const idNumber = document.getElementById('idNumber').value.trim();
-            const contactNumber = document.getElementById('contactNumber').value.trim();
-            const appointmentDate = document.getElementById('appointmentDate').value;
-
-            let isValid = true;
-
-            // Validate Full Name
-            if (fullName === '') {
-                document.getElementById('fullNameError').textContent = 'Full Name is required.';
-                isValid = false;
-            } else if (!/^[A-Za-z\s]+$/.test(fullName)) {
-                document.getElementById('fullNameError').textContent = 'Full Name should contain only letters and spaces.';
-                isValid = false;
-            }
-
-            // Validate ID Number
-            if (idNumber === '') {
-                document.getElementById('idNumberError').textContent = 'ID Number is required.';
-                isValid = false;
-            } else if (!/^\d+$/.test(idNumber)) {
-                document.getElementById('idNumberError').textContent = 'ID Number must contain only numbers.';
-                isValid = false;
-            }
-
-            // Validate Contact Number
-            if (contactNumber === '') {
-                document.getElementById('contactNumberError').textContent = 'Contact Number is required.';
-                isValid = false;
-            } else if (!/^\d{10}$/.test(contactNumber)) {
-                document.getElementById('contactNumberError').textContent = 'Contact Number must be 10 digits.';
-                isValid = false;
-            }
-
-            // Validate Appointment Date
-            if (appointmentDate === '') {
-                document.getElementById('appointmentDateError').textContent = 'Appointment Date is required.';
-                isValid = false;
-            } else {
-                const selectedDate = new Date(appointmentDate);
-                const currentDate = new Date();
-                if (selectedDate < currentDate) {
-                    document.getElementById('appointmentDateError').textContent = 'Appointment Date cannot be in the past.';
-                    isValid = false;
-                }
-            }
-
-            // Return false to prevent form submission if validation fails
-            return isValid;
-        }
-    </script>
+    
 </body>
 </html>

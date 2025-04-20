@@ -8,6 +8,7 @@
     <style>
         /* General Styles */
 body {
+    background:url('https://images.unsplash.com/photo-1615461065929-4f8ffed6ca40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
@@ -198,37 +199,43 @@ button[type="submit"]:hover {
                 <p>fill in details to request for Blood</p>
 
         </div>
-        <form method="POST" action="{% url 'find' %}">
+        <form method="POST" action="{% url 'find' %}" onsubmit="return validateForm()">
             {% csrf_token %}
             <div class="form-group">
                 <label for="fullName">Full Name:</label>
                 <input type="text" id="fullName" placeholder="Enter your fullName" name="name" required>
-               
+                <span id="fullNameError" class="error-message"></span>
             </div>
-
+        
             <div class="form-group">
                 <label for="idNumber">ID Number:</label>
                 <input type="text" id="idNumber" placeholder="Enter your id Number" name="idNumber" required>
-               
+                <span id="idNumberError" class="error-message"></span>
             </div>
-
+        
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" placeholder="Enter your email" name="email" required>
-                
+                <span id="emailError" class="error-message"></span>
             </div>
-
+        
             <div class="form-group">
                 <label for="phoneContact">Phone Contact:</label>
-                <input type="tel" id="phoneContact" placeholder ="Enter your phoneContact" name="phone" required>
-                
+                <input type="tel" id="phoneContact" placeholder="Enter your phoneContact" name="phone" required>
+                <span id="phoneContactError" class="error-message"></span>
             </div>
-
+        
             <div class="form-group">
                 <label for="gender">Gender:</label>
-                <input type="gender" id="gender" placeholder="Enter gender" name="gender" required>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span id="genderError" class="error-message"></span>
             </div>
-
+        
             <div class="form-group">
                 <label for="bloodType">Blood Type (if known):</label>
                 <select id="bloodType" name="bloodType">
@@ -242,98 +249,107 @@ button[type="submit"]:hover {
                     <option value="AB+">AB+</option>
                     <option value="AB-">AB-</option>
                 </select>
-               
+                <span id="bloodTypeError" class="error-message"></span>
             </div>
-
+        
             <div class="form-group">
                 <label for="location">Location:</label>
                 <input type="text" id="location" placeholder="Enter your location" name="location" required>
-                
-
+                <span id="locationError" class="error-message"></span>
+            </div>
+        
             <div class="form-group">
                 <label for="address">Address:</label>
                 <textarea id="address" name="address" rows="4" required></textarea>
-                
-
+                <span id="addressError" class="error-message"></span>
+            </div>
+        
             <button type="submit">Request Blood</button>
         </form>
-    </div>
-
-    <script>
-        function validateForm() {
-            // Clear previous error messages
-            document.getElementById('fullNameError').textContent = '';
-            document.getElementById('idNumberError').textContent = '';
-            document.getElementById('emailError').textContent = '';
-            document.getElementById('phoneContactError').textContent = '';
-            document.getElementById('genderError').textContent = '';
-            document.getElementById('bloodTypeError').textContent = '';
-            document.getElementById('locationError').textContent = '';
-            document.getElementById('addressError').textContent = '';
-
-            // Get form values
-            const fullName = document.getElementById('fullName').value.trim();
-            const idNumber = document.getElementById('idNumber').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phoneContact = document.getElementById('phoneContact').value.trim();
-            const gender = document.getElementById('gender').value;
-            const bloodType = document.getElementById('bloodType').value;
-            const location = document.getElementById('location').value.trim();
-            const address = document.getElementById('address').value.trim();
-
-            let isValid = true;
-
-            // Validate Full Name
-            if (fullName === '') {
-                document.getElementById('fullNameError').textContent = 'Full Name is required.';
-                isValid = false;
+        
+        <style>
+            .error-message {
+                color: red;
+                font-size: 0.8em;
+                display: block;
+                margin-top: 5px;
             }
-
-            // Validate ID Number
-            if (idNumber === '') {
-                document.getElementById('idNumberError').textContent = 'ID Number is required.';
-                isValid = false;
+        </style>
+        
+        <script>
+            function validateForm() {
+                // Clear previous error messages
+                const errorElements = document.querySelectorAll('.error-message');
+                errorElements.forEach(element => element.textContent = '');
+        
+                // Get form values
+                const fullName = document.getElementById('fullName').value.trim();
+                const idNumber = document.getElementById('idNumber').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phoneContact = document.getElementById('phoneContact').value.trim();
+                const gender = document.getElementById('gender').value;
+                const bloodType = document.getElementById('bloodType').value;
+                const location = document.getElementById('location').value.trim();
+                const address = document.getElementById('address').value.trim();
+        
+                let isValid = true;
+        
+                // Validate Full Name
+                if (fullName === '') {
+                    document.getElementById('fullNameError').textContent = 'Full Name is required.';
+                    isValid = false;
+                }
+        
+                // Validate ID Number (exactly 9 characters)
+                if (idNumber === '') {
+                    document.getElementById('idNumberError').textContent = 'ID Number is required.';
+                    isValid = false;
+                } else if (idNumber.length !== 9) {
+                    document.getElementById('idNumberError').textContent = 'ID Number must be exactly 9 characters.';
+                    isValid = false;
+                }
+        
+                // Validate Email
+                const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+                if (email === '') {
+                    document.getElementById('emailError').textContent = 'Email is required.';
+                    isValid = false;
+                } else if (!emailRegex.test(email)) {
+                    document.getElementById('emailError').textContent = 'Please enter a valid email (e.g., sam@gmail.com).';
+                    isValid = false;
+                }
+        
+                // Validate Phone Contact (only numbers, max 13 digits)
+                const phoneRegex = /^\d+$/;
+                if (phoneContact === '') {
+                    document.getElementById('phoneContactError').textContent = 'Phone Contact is required.';
+                    isValid = false;
+                } else if (!phoneRegex.test(phoneContact)) {
+                    document.getElementById('phoneContactError').textContent = 'Phone must contain only numbers.';
+                    isValid = false;
+                } else if (phoneContact.length > 13) {
+                    document.getElementById('phoneContactError').textContent = 'Phone number cannot exceed 13 digits.';
+                    isValid = false;
+                }
+        
+                // Validate Gender
+                if (gender === '') {
+                    document.getElementById('genderError').textContent = 'Gender is required.';
+                    isValid = false;
+                }
+        
+                // Validate Location
+                if (location === '') {
+                    document.getElementById('locationError').textContent = 'Location is required.';
+                    isValid = false;
+                }
+        
+                // Validate Address
+                if (address === '') {
+                    document.getElementById('addressError').textContent = 'Address is required.';
+                    isValid = false;
+                }
+        
+                return isValid;
             }
-
-            // Validate Email
-            if (email === '') {
-                document.getElementById('emailError').textContent = 'Email is required.';
-                isValid = false;
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                document.getElementById('emailError').textContent = 'Invalid email format.';
-                isValid = false;
-            }
-
-            // Validate Phone Contact
-            if (phoneContact === '') {
-                document.getElementById('phoneContactError').textContent = 'Phone Contact is required.';
-                isValid = false;
-            } else if (!/^\d+$/.test(phoneContact)) {
-                document.getElementById('phoneContactError').textContent = 'Phone Contact must contain only numbers.';
-                isValid = false;
-            }
-
-            // Validate Gender
-            if (gender === '') {
-                document.getElementById('genderError').textContent = 'Gender is required.';
-                isValid = false;
-            }
-
-            // Validate Location
-            if (location === '') {
-                document.getElementById('locationError').textContent = 'Location is required.';
-                isValid = false;
-            }
-
-            // Validate Address
-            if (address === '') {
-                document.getElementById('addressError').textContent = 'Address is required.';
-                isValid = false;
-            }
-
-            // Return false to prevent form submission if validation fails
-            return isValid;
-        }
-    </script>
-</body>
-</html>
+        </script>

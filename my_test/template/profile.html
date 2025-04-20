@@ -1,157 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Profile</title>
     <style>
-        /* CSS Variables */
-        :root {
-            --primary-color: #646cff;
-            --background-color: #f5f5f5;
-            --text-color: #333;
-            --border-color: #ddd;
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Body Styling */
         body {
-            margin: 0;
-            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
             background: url('https://images.unsplash.com/photo-1615461065929-4f8ffed6ca40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
             background-size: cover;
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            color: #333;
             padding: 20px;
-            backdrop-filter: blur(3px);
         }
 
-        /* Profile Container */
-        .profile-container {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            width: 100%;
-            max-width: 500px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Profile Header */
-        .profile-header {
+        h1 {
             text-align: center;
-            margin-bottom: 2rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
         }
 
-        /* Profile Picture */
-        .profile-picture {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 1rem;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid var(--primary-color);
+        .profile-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
 
-        .profile-picture img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .profile-section {
+            background: white; /* White background for sections */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Profile Info */
-        .profile-info {
-            margin-bottom: 2rem;
+        h2 {
+            color: #3498db; /* Blue color for section headers */
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
         }
 
         .info-group {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: #f8f9fa;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa; /* Light gray background for info groups */
         }
 
-        .info-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .info-value {
-            display: block;
-            font-size: 1.1rem;
-            color: var(--text-color);
-        }
-
-        /* Update Button */
-        .update-button {
-            width: 100%;
-            padding: 1rem;
-            background-color:  #d9534f;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
+        .info-group:hover {
+            background-color: #e9ecef; /* Slightly darker on hover */
             transition: background-color 0.3s ease;
         }
 
-        .update-button:hover {
-            background-color: #535bf2;
+        label {
+            display: block;
+            font-weight: 600;
+            color: #666; /* Gray color for labels */
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        span {
+            display: block;
+            color: #2c3e50; /* Dark color for data */
+            font-size: 1.1em;
+        }
+
+        /* Profile Photo */
+        .profile-photo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-photo img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid #3498db;
+            object-fit: cover;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #3498db; /* Blue background */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
         }
 
         /* Responsive Design */
-        @media (max-width: 480px) {
-            .profile-container {
-                padding: 1rem;
+        @media (max-width: 768px) {
+            .profile-sections {
+                grid-template-columns: 1fr;
             }
 
-            .profile-picture {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .profile-photo img {
                 width: 100px;
                 height: 100px;
+            }
+
+            .back-button {
+                top: 10px;
+                left: 10px;
+                padding: 8px 16px;
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Profile Container -->
-    <div class="profile-container">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <!-- Profile Picture -->
-            <div class="profile-picture">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Profile Picture" />
-            </div>
-            <h1>My Profile</h1>
+    <!-- Back Button -->
+    <a href="{% url 'index' %}" class="back-button">Back to Home</a>
+
+    <div class="container">
+        <h1>My Profile</h1>
+
+        <!-- Profile Photo -->
+        <div class="profile-photo">
+            <img src="https://via.placeholder.com/150" alt="Profile Photo">
         </div>
 
-        <!-- Profile Information -->
-        <div class="profile-info">
-            <div class="info-group">
-                <label>Username:</label>
-                <span class="info-value">{{username}}</span>
+        <div class="profile-sections">
+            <!-- Primary Information Section -->
+            <div class="profile-section">
+                <h2>Primary Information</h2>
+                <div class="info-group">
+                    <label>National ID:</label>
+                    <span id="nationalId">{{ national_id }}</span>
+                </div>
+                <div class="info-group">
+                    <label>Username:</label>
+                    <span id="username1">{{ username1 }}</span>
+                </div>
+                <div class="info-group">
+                    <label>Email Address:</label>
+                    <span id="email">{{ email }}</span>
+                </div>
             </div>
 
-            <div class="info-group">
-                <label>Email:</label>
-                <span class="info-value">{{email}}</span>
+            <!-- Secondary Information Section -->
+            <div class="profile-section">
+                <h2>Additional Information</h2>
+                <div class="info-group">
+                    <label>Name:</label>
+                    <span id="username2">{{ name }}</span>
+                </div>
+                <div class="info-group">
+                    <label>Age:</label>
+                    <span id="age">{{ age }}</span>
+                </div>
+                <div class="info-group">
+                    <label>Gender:</label>
+                    <span id="gender">{{ gender }}</span>
+                </div>
+                <div class="info-group">
+                    <label>Location:</label>
+                    <span id="location">{{ location }}</span>
+                </div>
+                <div class="info-group">
+                    <label>Phone Contact:</label>
+                    <span id="phone">{{ phone }}</span>
+                </div>
             </div>
-
-            <div class="info-group">
-                <label>National ID:</label>
-                <span class="info-value">{{national_id}}</span>
-            </div>
-
-            
         </div>
-
-        <!-- Update Button -->
-        <button class="update-button">Update Profile</button>
     </div>
 </body>
 </html>

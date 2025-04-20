@@ -12,7 +12,12 @@ urlpatterns=[
     path('contact',views.contact,name='contact'),
     path('signup',views.sign,name='signup'),
     path('vision',views.vision, name='vision'),
-    path('profile',views.profile,name='profile'),
+    path('profile',views.donor_profile,name='profile'),
     path('submit_donation',views.submit_donation,name='submit_donation'),
+    path('succ', views.success_reg,name='succ'),
+    path('succ2',views.succ_sign,name='succ2'),
+    path('logout',views.logout,name='logout'),
+    path('succ3',views.succ_reg,name='succ3'),
+    path('succ4',views.succ4,name='succ4'),
 
 ]

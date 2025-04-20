@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
 
+from django.utils import timezone
+
 # Create your models here.
 class Appointments(models.Model):
     appointment_id = models.AutoField(primary_key=True, blank=True, null=False)
@@ -45,19 +47,17 @@ class Donors(models.Model):
     username = models.CharField(unique=True, max_length=100)
     email=models.EmailField(unique=True,max_length=100)
     password = models.CharField(max_length=100)
+    date_joined=models.DateTimeField(default=timezone.now)
 
-    def set_password(self,raw_password):
-        self.password=make_password(raw_password)
-
-        def check_password(self, raw_password):
-            return check_password(raw_password,self.password)
+    def __str__(self):
+        return self.username
     class Meta:
         managed = True
         db_table = 'donors'
 
 
 class USER(models.Model):
-    name=models.CharField(max_length=100,unique=True)
+    name=models.CharField(max_length=100)
     age=models.IntegerField()
     id_number=models.CharField(max_length=100,unique=True)
     gender=models.CharField(max_length=100)

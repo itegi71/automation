@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .success-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .success-container h1 {
+            color: #4CAF50;
+        }
+        .success-container p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .proceed-button {
+            background-color: #d32f2f; /* Blood-red color */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+        .proceed-button:hover {
+            background-color: #b71c1c; /* Darker shade of red for hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <h1>Registration Successful!</h1>
+        <p>Hello <strong>{{ name }}</strong>,</p>
+        <p>You have successfully registered as a donor at <strong>{{ center }}</strong>.</p>
+        <p>Click the button below to proceed and book an appointment.</p>
+        <button class="proceed-button" onclick="window.location.href='/appointment'">Proceed</button>
+    </div>
+</body>
+</html>

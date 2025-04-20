@@ -130,33 +130,146 @@
             </div>
         {% endif %}
 
-        <form class="signup-form" method="post" action="{% url 'signup' %}">
+        <form class="signup-form" method="post" action="{% url 'signup' %}" onsubmit="return validateSignupForm()">
             {% csrf_token %}
             <div class="form-group">
-                <label for="name">NATIONAL ID</label>
-                <input name="national_id" type="text" id="name" placeholder="Enter your national ID no." required>
+                <label for="national_id">NATIONAL ID</label>
+                <input name="national_id" type="text" id="national_id" placeholder="Enter your national ID no." required>
+                <div id="nationalIdError" class="error"></div>
             </div>
                 
             <div class="form-group">
-                <label for="name">Username</label>
-                <input name="username" type="text" id="name" placeholder="Enter your username" required>
-
+                <label for="username">Username</label>
+                <input name="username" type="text" id="username" placeholder="Enter your username" required>
+                <div id="usernameError" class="error"></div>
             </div>
+        
             <div class="form-group">
                 <label for="email">Email</label>
                 <input name="email" type="email" id="email" placeholder="Enter your email" required>
+                <div id="emailError" class="error"></div>
             </div>
+        
             <div class="form-group">
                 <label for="password">Password</label>
                 <input name="password" type="password" id="password" placeholder="Enter your password" required>
+                <div id="passwordError" class="error"></div>
             </div>
-           
            
             <button type="submit" class="signup-button">Sign Up</button>
         </form>
+        
         <div class="signup-footer">
             <p>Already have an account? <a href="{% url 'login' %}">Login Here</a></p>
         </div>
-    </div>
-</body>
-</html>
+        
+        <style>
+            .error {
+                color: red;
+                font-size: 0.8em;
+                margin-top: 5px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            .signup-button {
+                width: 100%;
+                padding: 10px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            
+            .signup-button:hover {
+                background-color: #45a049;
+            }
+        </style>
+        
+        <script>
+            function validateSignupForm() {
+                // Clear previous errors
+                const errorElements = document.querySelectorAll('.error');
+                errorElements.forEach(el => el.textContent = '');
+                
+                let isValid = true;
+                
+                // National ID validation (exactly 9 digits)
+                const nationalId = document.getElementById('national_id').value.trim();
+                if (!nationalId) {
+                    document.getElementById('nationalIdError').textContent = 'National ID is required';
+                    isValid = false;
+                } else if (!/^\d{9}$/.test(nationalId)) {
+                    document.getElementById('nationalIdError').textContent = 'National ID must be exactly 9 digits';
+                    isValid = false;
+                }
+                
+                // Username validation
+                const username = document.getElementById('username').value.trim();
+                if (!username) {
+                    document.getElementById('usernameError').textContent = 'Username is required';
+                    isValid = false;
+                } else if (username.length < 4) {
+                    document.getElementById('usernameError').textContent = 'Username must be at least 4 characters';
+                    isValid = false;
+                }
+                
+                // Email validation
+                const email = document.getElementById('email').value.trim();
+                const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+                if (!email) {
+                    document.getElementById('emailError').textContent = 'Email is required';
+                    isValid = false;
+                } else if (!emailRegex.test(email)) {
+                    document.getElementById('emailError').textContent = 'Please enter a valid email (e.g., sam@gmail.com)';
+                    isValid = false;
+                }
+                
+                // Password validation
+                const password = document.getElementById('password').value;
+                if (!password) {
+                    document.getElementById('passwordError').textContent = 'Password is required';
+                    isValid = false;
+                } else if (password.length < 8) {
+                    document.getElementById('passwordError').textContent = 'Password must be at least 8 characters';
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+        
+            // Real-time email validation
+            document.getElementById('email').addEventListener('input', function() {
+                const emailError = document.getElementById('emailError');
+                const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+                
+                if (!emailRegex.test(this.value)) {
+                    emailError.textContent = "Please enter a valid email address (e.g., sam@gmail.com)";
+                    this.setCustomValidity("Invalid email format");
+                } else {
+                    emailError.textContent = "";
+                    this.setCustomValidity("");
+                }
+            });
+        
+            // Real-time national ID validation
+            document.getElementById('national_id').addEventListener('input', function() {
+                const nationalIdError = document.getElementById('nationalIdError');
+                
+                if (!/^\d*$/.test(this.value)) {
+                    nationalIdError.textContent = "National ID must contain only numbers";
+                    this.value = this.value.replace(/[^\d]/g, '');
+                } else if (this.value.length > 9) {
+                    nationalIdError.textContent = "National ID cannot exceed 9 digits";
+                    this.value = this.value.slice(0, 9);
+                }

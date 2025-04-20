@@ -112,42 +112,147 @@
             <h1>Donor Registration</h1>
             <p>Complete your details to donate blood 🩸</p>
         </div>
-        <form method="POST" action="{% url 'donate' %}">
+        {% if error %}
+        <div class="error-message">
+            {{error}}
+        </div>
+        {% endif %}
+        <form method="POST" action="{% url 'donate' %}" onsubmit="return validateDonationForm()">
             {% csrf_token %}
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" id="name" placeholder="Enter your full name" name="name" required>
+                <div id="nameError" class="error"></div>
             </div>
+            
             <div class="form-group">
                 <label for="age">Age</label>
-                <input type="number" id="age" placeholder="Enter your age" name="age" required>
+                <input type="number" id="age" placeholder="Enter your age" name="age" min="18" max="65" required>
+                <div id="ageError" class="error"></div>
             </div>
+            
             <div class="form-group">
-                <label for="id">National ID</label>
-                <input type="text" id="id" placeholder="Enter your National ID" name="id_number" required>
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Alien">Alien</option>
+                </select>
+                <div id="genderError" class="error"></div>
             </div>
-
-
-            <div class="form-group">
-                <label>Gender</label>
-                
-                    <input type="text" id="gender" placeholder="Enter your gender" name="gender"  required> 
-                    
-            </div>
+            
             <div class="form-group">
                 <label for="location">Location</label>
-                <input type="text" id="location" placeholder="Enter your location" name="location" required>
+                <input type="text" id="location" placeholder="Enter your current county location" name="location" required>
+                <div id="locationError" class="error"></div>
             </div>
+            
             <div class="form-group">
                 <label for="phone">Phone Contact</label>
-                <input type="text" id="phone" placeholder="Enter your phone number" name="phone" required >
+                <input type="tel" id="phone" placeholder="Enter your phone number" name="phone" required>
+                <div id="phoneError" class="error"></div>
             </div>
+            
             <div class="form-group">
-                <label for="donation-center">Preferred Donation Center</label>
-                <input type ='text' id="center" placeholder="Enter preffered center" name="center" required>
+                <label for="center">Preferred Donation Center</label>
+                <select id="center" name="center" required>
+                    <option value="">Select Center</option>
+                    <option value="kiambu">Kiambu</option>
+                    <option value="Nairobi">Nairobi</option>
+                    <option value="Mombasa">Mombasa</option>
+                    <option value="Kilifi">Kilifi</option>
+                    <option value="Nakuru">Nakuru</option>
+                    <option value="kisumu">Kisumu</option>
+                </select>
+                <div id="centerError" class="error"></div>
             </div>
+            
             <button type="submit" class="submit-button">Submit</button>
         </form>
-    </div>
-</body>
-</html>
+        
+        <style>
+            .error {
+                color: red;
+                font-size: 0.8em;
+                margin-top: 5px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            select, input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+        </style>
+        
+        <script>
+            function validateDonationForm() {
+                // Clear previous errors
+                const errorElements = document.querySelectorAll('.error');
+                errorElements.forEach(el => el.textContent = '');
+                
+                let isValid = true;
+                
+                // Name validation (letters and spaces only)
+                const name = document.getElementById('name').value.trim();
+                if (!name) {
+                    document.getElementById('nameError').textContent = 'Full name is required';
+                    isValid = false;
+                } else if (!/^[A-Za-z\s]+$/.test(name)) {
+                    document.getElementById('nameError').textContent = 'Name can only contain letters and spaces';
+                    isValid = false;
+                }
+                
+                // Age validation (18-65)
+                const age = document.getElementById('age').value;
+                if (!age) {
+                    document.getElementById('ageError').textContent = 'Age is required';
+                    isValid = false;
+                } else if (age < 18 || age > 65) {
+                    document.getElementById('ageError').textContent = 'Age must be between 18 and 65';
+                    isValid = false;
+                }
+                
+                // Gender validation
+                const gender = document.getElementById('gender').value;
+                if (!gender) {
+                    document.getElementById('genderError').textContent = 'Please select your gender';
+                    isValid = false;
+                }
+                
+                // Location validation
+                const location = document.getElementById('location').value.trim();
+                if (!location) {
+                    document.getElementById('locationError').textContent = 'Location is required';
+                    isValid = false;
+                }
+                
+                // Phone validation (numbers only, 10-13 digits)
+                const phone = document.getElementById('phone').value.trim();
+                if (!phone) {
+                    document.getElementById('phoneError').textContent = 'Phone number is required';
+                    isValid = false;
+                } else if (!/^\d+$/.test(phone)) {
+                    document.getElementById('phoneError').textContent = 'Phone must contain only numbers';
+                    isValid = false;
+                } else if (phone.length < 10 || phone.length > 13) {
+                    document.getElementById('phoneError').textContent = 'Phone must be 10-13 digits';
+                    isValid = false;
+                }
+                
+                // Donation center validation
+                const center = document.getElementById('center').value;
+                if (!center) {
+                    document.getElementById('centerError').textContent = 'Please select a donation center';
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+        </script>
